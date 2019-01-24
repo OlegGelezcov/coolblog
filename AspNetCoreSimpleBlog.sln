@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoolBlog", "CoolBlog\CoolBlog.csproj", "{C4E113EA-0FD2-420B-AAFA-29BD4894425B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4E113EA-0FD2-420B-AAFA-29BD4894425B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4E113EA-0FD2-420B-AAFA-29BD4894425B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4E113EA-0FD2-420B-AAFA-29BD4894425B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4E113EA-0FD2-420B-AAFA-29BD4894425B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B6C03E7-5D6A-41DC-B20D-1E8A18536EB2}
+	EndGlobalSection
+EndGlobal
