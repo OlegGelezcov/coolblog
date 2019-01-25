@@ -1,0 +1,33 @@
+﻿@model UserViewModel
+@{
+    ViewData["Title"] = "AddUser";
+}
+
+<h2>Add Blog User</h2>
+<form asp-controller="User" asp-action="AddUser" method="post">
+    <div class="row">
+        <div class="col-auto">
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" />
+            <span asp-validation-for="FirstName"></span>
+        </div>
+        <div class="col-auto">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" />
+            <span asp-validation-for="LastName"></span>
+        </div>
+    </div>
+    <div>
+        <div>
+            <label asp-for="Nickname"></label>
+            <input asp-for="Nickname" />
+            <span asp-validation-for="Nickname"></span>
+        </div>
+        <div>
+            <label asp-for="Position"></label>
+            <input asp-for="Position" />
+            <span asp-validation-for="Position"></span>
+        </div>
+    </div>
+    <button class="btn-lg" type="submit">Add Blog User</button>
+</form>

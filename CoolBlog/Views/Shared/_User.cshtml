@@ -1,0 +1,18 @@
+﻿@model UserViewModel
+
+<div>
+    <h4 class="card-title">@Model.Nickname</h4>
+
+    <dl class="row">
+        <dt class="col-sm-10">First Name</dt>
+        <dd class="col-sm-2">@Model.FirstName</dd>
+
+        <dt class="col-sm-10">Last Name</dt>
+        <dd class="col-sm-2">@Model.FirstName</dd>
+
+        <dt class="col-sm-10">Position</dt>
+        <dd class="col-sm-2">@Model.Position</dd>
+    </dl>
+    <a asp-action="ViewUserBlog" asp-controller="Blog">View user blogs</a>
+    <hr />
+</div>

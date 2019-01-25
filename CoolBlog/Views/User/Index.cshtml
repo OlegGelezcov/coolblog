@@ -1,0 +1,17 @@
+﻿@model IEnumerable<UserViewModel>
+@{
+    ViewData["Title"] = "All Blog Users";
+}
+
+<p>All blog users</p>
+<ul class="list-group-item">
+    @foreach(UserViewModel model in Model) {
+        <li>
+            @{ 
+                await Html.RenderPartialAsync("_User", model);
+            }
+        </li>
+    }
+</ul>
+
+
