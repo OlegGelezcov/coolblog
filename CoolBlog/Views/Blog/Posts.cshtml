@@ -1,0 +1,16 @@
+﻿@model IEnumerable<PostViewModel>
+
+@{
+    ViewData["Title"] = "Posts";
+}
+
+<p>Posts of: @ViewData["nickname"]</p>
+<a asp-controller="Blog" asp-action="AddPost" asp-route-nickname="@ViewData["nickname"]">Create New Post</a>
+
+<div>
+    @foreach (var post in Model.OrderByDescending(m => m.Created)) {
+        await Html.RenderPartialAsync("_Post", post);
+    }
+</div>
+
+

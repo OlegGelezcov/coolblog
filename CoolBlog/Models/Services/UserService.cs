@@ -30,17 +30,26 @@ namespace CoolBlog.Models.Services {
         }
 
         public async Task<Blog> GetUserBlogAsync(User user) {
-            await db.Entry(user).Reference(u => u.Blog).LoadAsync();
+            var entry = db.Entry(user).Reference(u => u.Blog);
+            if(false == entry.IsLoaded) {
+                await entry.LoadAsync();
+            }
             return user.Blog;
         }
 
         public async Task<ICollection<UserBlogSubscription>> GetUserSubscriptionsAsync(User user) {
-            await db.Entry(user).Collection(u => u.Subscriptions).LoadAsync();
+            var entry = db.Entry(user).Collection(u => u.Subscriptions);
+            if(false == entry.IsLoaded) {
+                await entry.LoadAsync();
+            }
             return user.Subscriptions;
         }
 
         public async Task<ICollection<ReadedUserPost>> GetUserReadedPostsAsync(User user) {
-            await db.Entry(user).Collection(u => u.ReadedPosts).LoadAsync();
+            var entry = db.Entry(user).Collection(u => u.ReadedPosts);
+            if(false == entry.IsLoaded) {
+                await entry.LoadAsync();
+            }
             return user.ReadedPosts;
         }
 

@@ -22,6 +22,20 @@ namespace CoolBlog.Models {
                 yield return user.ToViewModel();
             }
         }
+
+        public static PostViewModel ToViewModel(this Post post)
+            => new PostViewModel {
+                Title = post.Title,
+                Content = post.Content,
+                Created = post.CreatedDate,
+                NickName = post.Blog?.User?.NickName ?? string.Empty
+            };
+
+        public static IEnumerable<PostViewModel> ToViewModels(this IEnumerable<Post> posts ) {
+            foreach(var post in posts) {
+                yield return post.ToViewModel();
+            }
+        }
     }
 }
  
