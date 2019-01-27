@@ -1,0 +1,14 @@
+﻿@model UserHomeViewModel
+@{
+    ViewData["Title"] = Model.User.NickName;
+}
+
+@{ 
+    await Html.RenderPartialAsync("_User", Model.User.ToViewModel());
+}
+<div>
+    @foreach(var foreignUser in Model.ForeignUsers ) {
+        await Html.RenderPartialAsync("_ForeignUser", foreignUser);
+    }
+</div>
+

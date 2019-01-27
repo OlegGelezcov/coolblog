@@ -1,5 +1,6 @@
 ﻿using BlogModel.Data;
 using CoolBlog.Models.ViewModel;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace CoolBlog.Models.Services {
     public class UserService {
 
         private BlogDbContext db;
+        private ILogger logger;
 
-        public UserService(BlogDbContext dbContext) {
+        public UserService(BlogDbContext dbContext, ILogger<UserService> logger) {
             db = dbContext;
+            this.logger = logger;
         }
 
         public IEnumerable<User> GetAllUsers() {
@@ -51,6 +54,52 @@ namespace CoolBlog.Models.Services {
                 await entry.LoadAsync();
             }
             return user.ReadedPosts;
+        }
+
+        private async Task LoadSubscribtionBlogAsync(UserBlogSubscription subscription) {
+            if(subscription.Blog == null ) {
+                var tracking = db.Entry(subscription).Reference(s => s.Blog);
+                if(!tracking.IsLoaded) {
+                    await tracking.LoadAsync();
+                }
+            }
+        }
+
+        public async Task<bool> IsSubscribedAsync(User sourceUser, User targetUser ) {
+            //logger.LogInformation("IsSubscribedAsync");
+            var subscriptions = await GetUserSubscriptionsAsync(sourceUser);
+            //logger.LogInformation($"subscriptions length => {subscriptions.Count}");
+            foreach(var subscription in subscriptions) {
+                //logger.LogInformation($"check subscription user {subscription.User.UserId}:{subscription.UserId} with target {targetUser.UserId}");
+                await LoadSubscribtionBlogAsync(subscription);
+                logger.LogInformation($"source usr id: {sourceUser.UserId}, targ usr id: {targetUser.UserId}, subs usr id: {subscription.UserId}");
+                if (subscription.Blog.UserId == targetUser.UserId) {                    
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public async Task<bool> SubscribeToUserAsync(User sourceUser, User targetUser ) {
+            bool alreadySubscribed = await IsSubscribedAsync(sourceUser, targetUser);
+            
+            if(false == alreadySubscribed) {
+                var targetBlog = await GetUserBlogAsync(targetUser);
+                if(targetBlog == null ) {
+                    await AddBlogAsync(targetUser);
+                    targetBlog = await GetUserBlogAsync(targetUser);
+                    if(targetBlog == null ) {
+                        throw new NullReferenceException(nameof(targetBlog));
+                    }
+                }
+                var subscriptions = await GetUserSubscriptionsAsync(sourceUser);
+                subscriptions.Add(new UserBlogSubscription {
+                    Blog = targetBlog
+                });
+                await db.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
 

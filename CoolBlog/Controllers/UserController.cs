@@ -23,14 +23,38 @@ namespace CoolBlog.Controllers
             return View(userService.GetAllUsers().ToViewModels());
         }
 
-        public async Task<IActionResult> TestSubs() {
-            var user = userService.GetUser("oleggel");
-            var blog = await userService.GetUserBlogAsync(user);
-            var subscriptions = await userService.GetUserSubscriptionsAsync(user);
-            var readedPosts = await userService.GetUserReadedPostsAsync(user);
-
-            return Content($"blog: {blog != null}, user subs: {subscriptions != null}, readed {readedPosts != null}");
+        public async Task<IActionResult> UserHome(string nickname) {
+            var myUser = userService.GetUser(nickname);
+            var allUsers = userService.GetAllUsers().Where(u => u.UserId != myUser.UserId);
+            ViewData["nickname"] = myUser.NickName;
+            List<ForeignUser> foreignUsers = new List<ForeignUser>();
+            foreach(var user in allUsers) {
+                bool isSubscribed = await userService.IsSubscribedAsync(myUser, user);
+                
+                foreignUsers.Add(new ForeignUser {
+                    User = user,
+                    IsSubsribed = isSubscribed
+                });
+            }
+            return View(new UserHomeViewModel { User = myUser, ForeignUsers = foreignUsers });
         }
+
+        public async Task<IActionResult> Subscribe(string source, string target) {
+            var sourceUser = userService.GetUser(source);
+            var targetUser = userService.GetUser(target);
+            if(sourceUser == null ) {
+                throw new Exception($"User with nick {source} is null");
+            }
+            if(targetUser == null) {
+                throw new Exception($"User with nick {target} is null");
+            }
+            bool isSuccess = await userService.SubscribeToUserAsync(sourceUser, targetUser);
+            if(!isSuccess) {
+                throw new Exception($"Error of subscribe {source} => {target}");
+            }
+            return RedirectToAction("UserHome", new { nickname = source });
+        }
+
 
         public async Task<IActionResult> AddBlog() {
             var user = userService.GetUser("oleggel");
@@ -57,5 +81,7 @@ namespace CoolBlog.Controllers
             var newUser = await userService.AddUser(user);
             return View("ViewUser", newUser.ToViewModel());
         }
+
+
     }
 }

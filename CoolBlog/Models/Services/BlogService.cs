@@ -34,6 +34,8 @@ namespace CoolBlog.Models.Services {
         }
 
         public async Task<IEnumerable<Post>> GetUserPostsAsync(string nickname) {
+            List<Post> results = new List<Post>();
+
             var user = userService.GetUser(nickname);
             if(user == null) {
                 throw new ArgumentException($"{nameof(nickname)}");
@@ -47,9 +49,53 @@ namespace CoolBlog.Models.Services {
             if(false == entry.IsLoaded) {
                 await entry.LoadAsync();
             }
-            return blog.Posts;
+            //return blog.Posts;
+            results.AddRange(blog.Posts);
+
+            var subscriptions = await userService.GetUserSubscriptionsAsync(user);
+
+            foreach(var subscription in subscriptions) {
+                var refBlog = dbContext.Entry(subscription).Reference(s => s.Blog);
+                if(!refBlog.IsLoaded) {
+                    await refBlog.LoadAsync();
+                }
+                var subscribedBlog = subscription.Blog;
+                var refPosts = dbContext.Entry(subscribedBlog).Collection(b => b.Posts);
+                if(!refPosts.IsLoaded) {
+                    await refPosts.LoadAsync();
+                }
+                results.AddRange(subscription.Blog.Posts);
+            }
+
+            foreach(var post in results ) {
+                var refBlog = dbContext.Entry(post).Reference(p => p.Blog);
+                if(!refBlog.IsLoaded) {
+                    await refBlog.LoadAsync();
+                }
+                var blogUserRef = dbContext.Entry(post.Blog).Reference(b => b.User);
+                if(!blogUserRef.IsLoaded) {
+                    await blogUserRef.LoadAsync();
+                }
+            }
+
+            return results.OrderByDescending(p => p.CreatedDate);
         }
 
+
+        public async Task<bool> IsPostReadedByUser(User user, Post post) {
+            var readedPosts = await userService.GetUserReadedPostsAsync(user);
+
+            foreach(var readedPost in readedPosts) {
+                var postRef = dbContext.Entry(readedPost).Reference(rp => rp.Post);
+                if(!postRef.IsLoaded) {
+                    await postRef.LoadAsync();
+                }
+                if(readedPost.PostId == post.PostId) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
     }
 }

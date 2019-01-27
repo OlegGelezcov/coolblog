@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 namespace CoolBlog.Models.ViewModel {
     public class PostViewModel {
 
+        public int PostId { get; set; }
+
         [HiddenInput(DisplayValue = false)]
         public string NickName { get; set; }
 
@@ -20,5 +22,9 @@ namespace CoolBlog.Models.ViewModel {
 
         [Required]
         public string Content { get; set; }
+
+        public bool IsReaded { get; set; }
+
+        
     }
 }

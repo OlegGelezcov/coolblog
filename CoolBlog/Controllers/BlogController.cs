@@ -54,7 +54,13 @@ namespace CoolBlog.Controllers
 
         public async Task<IActionResult> Posts(string nickname ) {
             var posts = await blogService.GetUserPostsAsync(nickname);
-            var viewModels = posts.ToViewModels();
+            User user = userService.GetUser(nickname);
+
+            List<PostViewModel> viewModels = new List<PostViewModel>();
+            foreach(Post post in posts ) {
+                bool isReaded = await blogService.IsPostReadedByUser(user, post);
+                viewModels.Add(post.ToViewModel(isReaded));
+            }
             ViewData["nickname"] = nickname;
             return View(viewModels);
         }

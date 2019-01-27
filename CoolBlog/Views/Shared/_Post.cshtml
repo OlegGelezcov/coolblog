@@ -1,9 +1,18 @@
 ﻿@model PostViewModel
 
+@if(Model.IsReaded) {
+    Html.Raw(@"    .readed {
+        background - color: yellow;
+    }");
+}
 <div>
+    <p>Created by: @Model.NickName</p>
     <p class="text-info">Created: @Model.Created.ToString()</p>
-    <h4 class="text-primary">@Model.Title</h4>
+    <h4 class="text-primary readed">@Model.Title</h4>
     <p class="text-body">@Model.Content</p>
-    <hr/>
+    @if(!Model.IsReaded) {
+        <a asp-action="MarkReaded" asp-controller="Blog" asp-route-nickname="@ViewData["nickname"]" asp-route-targetnickname="@Model.NickName" asp-route-postid="@Model.PostId">Mark as readed</a>
+    }
+    <hr />
 </div>
 

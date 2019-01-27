@@ -23,17 +23,19 @@ namespace CoolBlog.Models {
             }
         }
 
-        public static PostViewModel ToViewModel(this Post post)
+        public static PostViewModel ToViewModel(this Post post, bool isReaded)
             => new PostViewModel {
                 Title = post.Title,
                 Content = post.Content,
                 Created = post.CreatedDate,
-                NickName = post.Blog?.User?.NickName ?? string.Empty
+                NickName = post.Blog?.User?.NickName ?? string.Empty,
+                IsReaded = isReaded,
+                PostId = post.PostId
             };
 
-        public static IEnumerable<PostViewModel> ToViewModels(this IEnumerable<Post> posts ) {
+        public static IEnumerable<PostViewModel> ToViewModels(this IEnumerable<Tuple<Post, bool>> posts ) {
             foreach(var post in posts) {
-                yield return post.ToViewModel();
+                yield return post.Item1.ToViewModel(post.Item2);
             }
         }
     }

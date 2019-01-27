@@ -1,0 +1,19 @@
+﻿@model ForeignUser
+
+@{
+    string nickname = (string)ViewData["nickname"];
+    string target = Model.User.NickName;
+}
+
+<div>
+    <p>Nick: @Model.User.NickName</p>
+    <p>First Name: @Model.User.FirstName</p>
+    <p>Last Name: @Model.User.LastName</p>
+    <p>Job: @Model.User.Position</p>
+    @if (Model.IsSubsribed) {
+        <a asp-action="Unsubscibe" asp-controller="User" asp-route-source="@nickname" asp-route-target="@target">Unsubscribe</a>
+    } else {
+        <a asp-action="Subscribe" asp-controller="User" asp-route-source="@nickname" asp-route-target="@target">Subscribe</a>
+    }
+</div>
+
